@@ -86,6 +86,16 @@ describe("POST /api/transform (mocked provider)", () => {
     expect(request.prompt).toContain("Mood: Golden.");
     expect(request.width).toBeLessThanOrEqual(2048);
     expect(request.mime).toBe("image/jpeg");
+    expect(request.keepOriginalDetail).toBe(true);
+  });
+
+  it("asks the provider to return its own picture for Doodle", async () => {
+    const { provider, edit } = await mockProvider();
+    const response = await makeHandler({ provider })(post(new Uint8Array(await makeImage("jpeg")), { query: "?mood=doodle" }));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-chromafy-mood")).toBe("doodle");
+    expect(edit.mock.calls[0][0].keepOriginalDetail).toBe(false);
+    expect(edit.mock.calls[0][0].prompt).toContain("Mood: Doodle.");
   });
 
   it("sends the provider a re-encoded image without EXIF or GPS", async () => {

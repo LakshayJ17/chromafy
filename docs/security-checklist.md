@@ -53,6 +53,7 @@ outside the code) · **Not verified** (cannot be verified in this environment).
 | Output validated: base64 alphabet and size, signature equals requested JPEG, full decode, dimensions | `validate-output.ts` | Tested |
 | Cloudflare: response body capped at 40 MB while streaming; non-JSON, error envelopes and missing images rejected; redirects refused | `cloudflare-provider.ts` | Tested (mocked) |
 | Cloudflare: reference image re-encoded below the 512px input limit; only documented form fields sent | `cloudflare-provider.ts` | Tested (mocked) |
+| Cloudflare: the validated output's colour and light are applied to the original (`transferLook`); the result is re-encoded as JPEG at the original's size | `transfer-look.ts` | Tested |
 | Upstash credentials and limits in production | Environment | **Deploy** |
 
 ## Injection and AI safety

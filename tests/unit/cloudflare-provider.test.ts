@@ -22,6 +22,7 @@ async function request(width = 1600, height = 1067) {
     width,
     height,
     prompt: "server prompt",
+    keepOriginalDetail: true,
     signal: new AbortController().signal,
   };
 }
@@ -36,7 +37,8 @@ describe("createCloudflareImageProvider", () => {
 
     const result = await provider.edit(await request());
 
-    expect(result).toMatchObject({ mime: "image/jpeg", width: 1024, height: 688 });
+    // The edit's look is applied to the original, so the result keeps the original's size.
+    expect(result).toMatchObject({ mime: "image/jpeg", width: 1600, height: 1067 });
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe(`https://api.cloudflare.com/client/v4/accounts/${config.accountId}/ai/run/@cf/black-forest-labs/flux-2-klein-4b`);
     expect(init.method).toBe("POST");
@@ -54,9 +56,17 @@ describe("createCloudflareImageProvider", () => {
     expect([...form.keys()].sort()).toEqual(["height", "input_image_0", "prompt", "width"]);
   });
 
-  it("accepts PNG output by signature", async () => {
+  it("returns the model's own picture for drawing worlds such as Doodle", async () => {
     const provider = createCloudflareImageProvider(config, vi.fn(async () => ok("png")) as unknown as typeof fetch);
-    expect((await provider.edit(await request())).mime).toBe("image/png");
+    const result = await provider.edit({ ...(await request()), keepOriginalDetail: false });
+    expect(result).toMatchObject({ mime: "image/png", width: 1024, height: 688 });
+  });
+
+  it("accepts PNG output by signature and returns a JPEG at the original size", async () => {
+    const provider = createCloudflareImageProvider(config, vi.fn(async () => ok("png")) as unknown as typeof fetch);
+    const result = await provider.edit(await request());
+    expect(result).toMatchObject({ mime: "image/jpeg", width: 1600, height: 1067 });
+    expect((await sharp(result.bytes).metadata()).format).toBe("jpeg");
   });
 
   it.each([

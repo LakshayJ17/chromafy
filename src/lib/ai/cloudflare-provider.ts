@@ -3,6 +3,7 @@ import sharp from "sharp";
 import { z } from "zod";
 import { AppError } from "@/lib/errors";
 import { decodeBase64Image, validateOutputImageOfAnyAllowedType } from "@/lib/images/validate-output";
+import { transferLook } from "@/lib/images/transfer-look";
 import { withOneRetry, type ImageEditProvider } from "./image-provider";
 
 /**
@@ -49,7 +50,7 @@ export function createCloudflareImageProvider(
   const url = `${API_ORIGIN}/client/v4/accounts/${encodeURIComponent(config.accountId)}/ai/run/${config.model}`;
 
   return {
-    async edit({ image, width, height, prompt, signal }) {
+    async edit({ image, width, height, prompt, keepOriginalDetail, signal }) {
       const reference = await sharp(image)
         .resize({ width: CLOUDFLARE_INPUT_MAX_EDGE, height: CLOUDFLARE_INPUT_MAX_EDGE, fit: "inside", withoutEnlargement: true })
         .jpeg({ quality: 92, mozjpeg: true })
@@ -98,7 +99,17 @@ export function createCloudflareImageProvider(
       };
 
       const base64 = await withOneRetry(send, signal);
-      return validateOutputImageOfAnyAllowedType(decodeBase64Image(base64));
+      const edited = await validateOutputImageOfAnyAllowedType(decodeBase64Image(base64));
+      if (!keepOriginalDetail) return edited;
+      // The model redraws the scene from a sub-512px copy, so its detail is soft and
+      // objects can shift. Keep the original's pixels and take only the edit's look.
+      let look: Awaited<ReturnType<typeof transferLook>>;
+      try {
+        look = await transferLook(image, edited.bytes);
+      } catch (cause) {
+        throw new AppError("internal", { cause });
+      }
+      return { bytes: look.bytes, mime: "image/jpeg", width: look.width, height: look.height };
     },
   };
 }

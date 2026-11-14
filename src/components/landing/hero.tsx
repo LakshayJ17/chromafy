@@ -1,6 +1,10 @@
-import { ArrowUpRight } from "lucide-react";
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowUpRight, Check } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { Wordmark } from "@/components/layout/logo";
 import { ButtonLink } from "@/components/ui/button";
 import { MOODS, type MoodId } from "@/lib/config/moods";
@@ -8,25 +12,101 @@ import { findSample } from "@/lib/config/samples";
 
 const HERO_SAMPLE = findSample("hay-field")!;
 
-/** Ordered light to dark, as the direction asks; each links to its world on the stage below. */
-const SWATCH_ORDER: MoodId[] = ["daydream", "golden", "after-rain", "old-soul"];
+/** Ordered light to dark, as the direction asks. */
+const SWATCH_ORDER: MoodId[] = ["daydream", "golden", "after-rain", "old-soul", "doodle"];
+
+/**
+ * Real Chromafy results for the hero photo, made once with the production
+ * pipeline (FLUX.2 [klein] on Cloudflare; for the light worlds, the look is then
+ * applied to the original) and saved as static files. Nothing here is a filter imitation.
+ */
+const HERO_RESULTS: Record<MoodId, string> = {
+  golden: "/samples/hero/hay-field-golden.jpg",
+  "after-rain": "/samples/hero/hay-field-after-rain.jpg",
+  "old-soul": "/samples/hero/hay-field-old-soul.jpg",
+  daydream: "/samples/hero/hay-field-daydream.jpg",
+  doodle: "/samples/hero/hay-field-doodle-v2.jpg",
+};
+
+/**
+ * Headline and menu colour for each world, taken from its palette and checked
+ * against the result's sky behind the headline (at least 4.5:1 on average).
+ */
+const HERO_INK: Record<MoodId | "original", string> = {
+  original: "#1A1726",
+  golden: "#6B2E0A",
+  "after-rain": "#0E3B36",
+  "old-soul": "#24120B",
+  daydream: "#4E2D6B",
+  doodle: "#1A1726",
+};
+
+const WIPE_SECONDS = 1.1;
+const HIDDEN = "inset(0% 100% 0% 0%)";
+const SHOWN = "inset(0% 0% 0% 0%)";
 
 export function Hero() {
+  const [active, setActive] = useState<MoodId | null>(null);
+  const reduceMotion = useReducedMotion();
+  const ink = HERO_INK[active ?? "original"];
+
   return (
     <header className="bg-paper">
       <div className="grid gap-2 p-2 lg:h-[max(640px,min(100svh,980px))] lg:grid-cols-12 lg:gap-[10px] lg:p-[10px]">
         <div className="relative h-[64svh] min-h-[460px] overflow-hidden rounded-media lg:col-span-10 lg:h-auto">
-          <Image
-            src={HERO_SAMPLE.src}
-            alt={`${HERO_SAMPLE.alt}. An original photograph, not a Chromafy result.`}
-            fill
-            priority
-            sizes="(min-width: 1024px) 84vw, 100vw"
-            className="drift object-cover object-[50%_70%]"
-          />
-          <div className="scrim-bottom absolute inset-x-0 bottom-0 h-1/2" aria-hidden="true" />
+          <div className="drift absolute inset-0">
+            <Image
+              src={HERO_SAMPLE.src}
+              alt={
+                active
+                  ? `${HERO_SAMPLE.alt}, reimagined by Chromafy in the ${MOODS[active].name} world.`
+                  : `${HERO_SAMPLE.alt}. An original photograph, not a Chromafy result.`
+              }
+              fill
+              priority
+              sizes="(min-width: 1024px) 84vw, 100vw"
+              className="object-cover object-[50%_70%]"
+            />
+            {SWATCH_ORDER.map((id) => {
+              const isActive = id === active;
+              // The new world sweeps in from the left over the current picture; the
+              // one underneath is hidden only once the sweep has covered it.
+              const transition = reduceMotion
+                ? { duration: 0 }
+                : isActive
+                  ? { duration: WIPE_SECONDS, ease: [0.32, 0.72, 0, 1] as const }
+                  : active === null
+                    ? { duration: WIPE_SECONDS * 0.8, ease: [0.32, 0.72, 0, 1] as const }
+                    : { duration: 0, delay: WIPE_SECONDS };
+              return (
+                <motion.div
+                  key={id}
+                  aria-hidden="true"
+                  className="absolute inset-0"
+                  style={{ zIndex: isActive ? 2 : 1, clipPath: HIDDEN }}
+                  initial={false}
+                  animate={{ clipPath: isActive ? SHOWN : HIDDEN }}
+                  transition={transition}
+                >
+                  <Image
+                    src={HERO_RESULTS[id]}
+                    alt=""
+                    fill
+                    loading="eager"
+                    sizes="(min-width: 1024px) 84vw, 100vw"
+                    className="object-cover object-[50%_70%]"
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+          <div className="scrim-bottom absolute inset-x-0 bottom-0 z-[3] h-1/2" aria-hidden="true" />
 
-          <nav aria-label="Main" className="absolute inset-x-0 top-0 flex items-center justify-between p-5 text-ink lg:p-7">
+          <nav
+            aria-label="Main"
+            className="absolute inset-x-0 top-0 z-[4] flex items-center justify-between p-5 transition-colors duration-700 lg:p-7"
+            style={{ color: ink }}
+          >
             <Link href="/" aria-label="Chromafy home" className="rounded-full">
               <Wordmark />
             </Link>
@@ -49,12 +129,15 @@ export function Hero() {
             </ul>
           </nav>
 
-          <h1 className="absolute inset-x-5 top-[22%] text-center text-[12vw] leading-[1.02] text-ink lg:top-[17%] lg:text-display">
+          <h1
+            className="absolute inset-x-5 top-[22%] z-[4] text-center text-[12vw] leading-[1.02] transition-colors duration-700 lg:top-[17%] lg:text-display"
+            style={{ color: ink }}
+          >
             What if it felt
             <br /> different?
           </h1>
 
-          <div className="absolute inset-x-5 bottom-6 flex flex-col items-center gap-5 lg:inset-x-7 lg:bottom-9 lg:block">
+          <div className="absolute inset-x-5 bottom-6 z-[4] flex flex-col items-center gap-5 lg:inset-x-7 lg:bottom-9 lg:block">
             <p className="hidden max-w-[22rem] text-body text-paper lg:absolute lg:bottom-1 lg:left-0 lg:block">
               Take an ordinary moment. Give it a new atmosphere.
             </p>
@@ -63,26 +146,37 @@ export function Hero() {
                 Reimagine a photo
               </ButtonLink>
             </div>
-            <p className="text-center text-small text-paper/90 lg:absolute lg:bottom-1 lg:right-0 lg:text-right">
-              Original photo, unedited · {HERO_SAMPLE.credit.author} / Unsplash
+            <p aria-live="polite" className="text-center text-small text-paper/90 lg:absolute lg:bottom-1 lg:right-0 lg:text-right">
+              {active
+                ? `Chromafy result: ${MOODS[active].name} · ${HERO_SAMPLE.credit.author} / Unsplash`
+                : `Original photo, unedited · ${HERO_SAMPLE.credit.author} / Unsplash`}
             </p>
           </div>
         </div>
 
-        <nav aria-label="The four worlds" className="lg:col-span-2">
+        <nav aria-label="The worlds" className="lg:col-span-2">
           <ul className="flex flex-col lg:h-full">
             {SWATCH_ORDER.map((id) => {
               const mood = MOODS[id];
+              const isActive = id === active;
               return (
                 <li key={id} className="lg:flex-1">
-                  <a
-                    href={`#world-${id}`}
-                    className="group flex h-[52px] items-start justify-between px-5 pt-4 transition-[filter] duration-200 hover:brightness-95 lg:h-full lg:flex-col lg:justify-between lg:pb-5"
+                  <button
+                    type="button"
+                    aria-pressed={isActive}
+                    aria-label={`Show this photo in ${mood.name}`}
+                    onClick={() => setActive(isActive ? null : id)}
+                    className="group flex h-[52px] w-full items-start justify-between px-5 pt-4 text-left transition-[filter] duration-200 hover:brightness-95 lg:h-full lg:flex-col lg:justify-between lg:pb-5"
                     style={{ backgroundColor: mood.field.background, color: mood.field.ink }}
                   >
-                    <span className="text-small font-medium lg:text-body">{mood.name}</span>
-                    <span className="hidden text-small opacity-90 lg:block">{mood.feeling}</span>
-                  </a>
+                    <span className="flex items-center gap-2 text-small font-medium lg:text-body">
+                      {mood.name}
+                      {isActive && <Check className="size-4" strokeWidth={2} aria-hidden="true" />}
+                    </span>
+                    <span className="hidden text-small opacity-90 lg:block">
+                      {isActive ? "Showing · tap again for the original" : mood.feeling}
+                    </span>
+                  </button>
                 </li>
               );
             })}

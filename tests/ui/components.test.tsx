@@ -7,12 +7,12 @@ import { MoodPicker } from "@/components/moods/mood-picker";
 import { Dropzone } from "@/components/upload/dropzone";
 
 describe("MoodPicker", () => {
-  it("offers the four worlds as a labelled radio group", async () => {
+  it("offers the five worlds as a labelled radio group", async () => {
     const onChange = vi.fn();
     render(<MoodPicker value={null} onChange={onChange} />);
     expect(screen.getByRole("group", { name: "Choose a world" })).toBeInTheDocument();
     const radios = screen.getAllByRole("radio");
-    expect(radios.map((radio) => (radio as HTMLInputElement).value)).toEqual(["golden", "after-rain", "old-soul", "daydream"]);
+    expect(radios.map((radio) => (radio as HTMLInputElement).value)).toEqual(["golden", "after-rain", "old-soul", "daydream", "doodle"]);
     await userEvent.click(screen.getByLabelText(/After Rain/));
     expect(onChange).toHaveBeenCalledWith("after-rain");
   });

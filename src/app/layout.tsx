@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     template: "%s · Chromafy",
   },
   description:
-    "Upload an ordinary photo, choose one of four moods and see the same moment in another light. Keep the moment. Change the feeling.",
+    "Upload an ordinary photo, choose a world and see the same moment in another light, or sketched over with doodles. Keep the moment. Change the feeling.",
   icons: { icon: "/icon.svg" },
 };
 

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { isMoodId, MOOD_LIST, MOODS, type MoodId } from "@/lib/config/moods";
 
 /**
- * The world index: four names on the left, and on the right a stage in the
+ * The world index: the world names on the left, and on the right a stage in the
  * chosen world's colour holding the real explanation card the studio shows
  * beside a result. No transformed image is shown here, because none exists
  * until someone runs a real transformation.
@@ -15,7 +15,7 @@ export function WorldIndex() {
   const [selected, setSelected] = useState<MoodId>("golden");
   const mood = MOODS[selected];
 
-  // The hero's swatch column links to #world-<id>; follow it.
+  // Links to #world-<id> open that world here.
   useEffect(() => {
     const sync = () => {
       const id = window.location.hash.replace("#world-", "");
@@ -31,7 +31,7 @@ export function WorldIndex() {
       <div className="page-x grid gap-10 lg:grid-cols-12 lg:gap-6">
         <div className="lg:col-span-5 lg:pt-16">
           <h2 id="worlds-title" className="sr-only">
-            The four worlds
+            The worlds
           </h2>
           <div
             role="group"
@@ -68,7 +68,7 @@ export function WorldIndex() {
           role="region"
           aria-live="polite"
           aria-label={`${mood.name}: what we ask the model for`}
-          className="relative h-[70svh] min-h-[520px] overflow-hidden transition-colors duration-300 ease-out lg:col-span-7 lg:h-[88svh] lg:max-h-[880px]"
+          className="relative flex min-h-[520px] items-start overflow-hidden px-4 pb-10 pt-[72px] transition-colors duration-300 ease-out sm:px-16 sm:pb-16 lg:col-span-7 lg:min-h-[min(88svh,880px)]"
           style={{ backgroundColor: mood.field.background }}
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -79,7 +79,7 @@ export function WorldIndex() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="absolute left-4 top-[72px] w-[min(560px,calc(100%-2rem))] rounded-media bg-paper p-6 text-ink sm:left-16 sm:p-8"
+              className="w-full max-w-[560px] rounded-media bg-paper p-6 text-ink sm:p-8"
             >
               <div className="flex items-center gap-2 text-small font-medium">
                 <Check className="size-4 text-success" strokeWidth={1.75} aria-hidden="true" />

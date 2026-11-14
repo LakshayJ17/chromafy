@@ -43,6 +43,7 @@ describe("createOpenAIImageProvider", () => {
     prompt: "server prompt",
     width: 1500,
     height: 1000,
+    keepOriginalDetail: true,
     signal: new AbortController().signal,
   });
 

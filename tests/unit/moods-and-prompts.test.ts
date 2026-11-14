@@ -3,8 +3,8 @@ import { __testing, buildTransformPrompt } from "@/lib/ai/prompt-builder";
 import { isMoodId, MOOD_IDS, MOOD_LIST, MOODS, pickSurpriseMood } from "@/lib/config/moods";
 
 describe("mood registry", () => {
-  it("defines exactly the four worlds with stable IDs", () => {
-    expect(MOOD_IDS).toEqual(["golden", "after-rain", "old-soul", "daydream"]);
+  it("defines exactly the five worlds with stable IDs", () => {
+    expect(MOOD_IDS).toEqual(["golden", "after-rain", "old-soul", "daydream", "doodle"]);
     expect(MOOD_LIST.map((mood) => mood.id)).toEqual([...MOOD_IDS]);
   });
 
@@ -38,17 +38,33 @@ describe("mood registry", () => {
     for (let i = 0; i < 200; i += 1) expect(isMoodId(pickSurpriseMood())).toBe(true);
   });
 
+  it("Surprise Me never picks Doodle, which draws on the photo", () => {
+    for (let i = 0; i < 300; i += 1) expect(pickSurpriseMood()).not.toBe("doodle");
+    expect(MOODS.doodle.kind).toBe("drawing");
+    expect(MOOD_LIST.filter((mood) => mood.kind === "look").map((mood) => mood.id)).toEqual(["golden", "after-rain", "old-soul", "daydream"]);
+  });
+
   it("Surprise Me can avoid repeating the current mood", () => {
     for (let i = 0; i < 100; i += 1) expect(pickSurpriseMood("golden")).not.toBe("golden");
   });
 });
 
 describe("prompt construction", () => {
-  it.each(MOOD_IDS)("%s prompt always carries the preservation rules", (id) => {
+  it.each(MOOD_IDS.filter((id) => MOODS[id].kind === "look"))("%s prompt always carries the preservation rules", (id) => {
     const prompt = buildTransformPrompt(id);
     expect(prompt).toContain(__testing.PRESERVATION_RULES);
     expect(prompt).toContain(`Mood: ${MOODS[id].name}.`);
     expect(prompt).toContain(__testing.MOOD_INSTRUCTIONS[id]);
+  });
+
+  it("Doodle carries the drawing rules: photo unchanged, faces clear, kind, no words", () => {
+    const prompt = buildTransformPrompt("doodle");
+    expect(prompt).toContain(__testing.DRAWING_RULES);
+    expect(prompt).not.toContain(__testing.PRESERVATION_RULES);
+    expect(prompt).toMatch(/faces clear/);
+    expect(prompt).toMatch(/no words, letters, numbers or logos/);
+    expect(prompt).toMatch(/nothing mocking, rude, frightening or suggestive/);
+    expect(prompt).toContain(__testing.MOOD_INSTRUCTIONS.doodle);
   });
 
   it("After Rain forbids inventing rain or puddles", () => {

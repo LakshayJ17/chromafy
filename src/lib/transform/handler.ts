@@ -2,7 +2,7 @@ import "server-only";
 import { buildTransformPrompt } from "@/lib/ai/prompt-builder";
 import type { ImageEditProvider } from "@/lib/ai/image-provider";
 import type { ServerConfig } from "@/lib/config/env";
-import { pickSurpriseMood, type MoodId } from "@/lib/config/moods";
+import { MOODS, pickSurpriseMood, type MoodId } from "@/lib/config/moods";
 import { AppError, errorBody, type ErrorCode } from "@/lib/errors";
 import { normalizeImage } from "@/lib/images/normalize-image";
 import { validateImage } from "@/lib/images/validate-image";
@@ -127,6 +127,7 @@ export function createTransformHandler(deps: TransformDependencies) {
           width: normalized.width,
           height: normalized.height,
           prompt,
+          keepOriginalDetail: MOODS[mood].kind === "look",
           signal,
         })
         .catch((error: unknown) => {

@@ -52,10 +52,17 @@ test("landing page renders with strict security headers and no console errors", 
   expect(headers["content-security-policy"]).not.toContain("unsafe-eval");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/What if it felt\s*different\?/);
-  await expect(page.getByRole("navigation", { name: "The four worlds" }).getByRole("link")).toHaveCount(5);
+  const heroWorlds = page.getByRole("navigation", { name: "The worlds" });
+  await expect(heroWorlds.getByRole("button")).toHaveCount(5);
+  await heroWorlds.getByRole("button", { name: /After Rain/ }).click();
+  await expect(heroWorlds.getByRole("button", { name: /After Rain/ })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByText(/Chromafy result: After Rain/)).toBeVisible();
+  await heroWorlds.getByRole("button", { name: /After Rain/ }).click();
+  await expect(page.getByText(/Original photo, unedited/)).toBeVisible();
 
-  await page.getByRole("navigation", { name: "The four worlds" }).getByRole("link", { name: /After Rain/ }).click();
-  await expect(page.getByRole("button", { name: "After Rain", pressed: true })).toBeVisible();
+  const index = page.getByRole("group", { name: "Choose a world to read about" });
+  await index.getByRole("button", { name: "After Rain" }).click();
+  await expect(index.getByRole("button", { name: "After Rain", pressed: true })).toBeVisible();
   await expect(page.getByRole("region", { name: /After Rain/ })).toContainText("cooler");
 
   await page.getByRole("link", { name: "Reimagine a photo" }).click();

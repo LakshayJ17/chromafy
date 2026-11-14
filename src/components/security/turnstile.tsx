@@ -54,7 +54,11 @@ export const Turnstile = forwardRef<TurnstileHandle, { siteKey: string; nonce?: 
       appearance: "interaction-only",
       theme: "light",
       callback: (token: string) => settle({ token }),
-      "error-callback": () => settle({ error: "Turnstile error" }),
+      "error-callback": (code?: string) => {
+        // Cloudflare's error codes (for example 110200: hostname not allowed) are safe to show and explain failures.
+        console.warn(`Turnstile error ${code ?? "unknown"}`);
+        settle({ error: "Turnstile error" });
+      },
       "expired-callback": () => settle({ error: "Turnstile expired" }),
       "timeout-callback": () => settle({ error: "Turnstile timeout" }),
     });

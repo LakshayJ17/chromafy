@@ -8,7 +8,8 @@ atmosphere while keeping the subject and composition.
 
 ## Features
 
-- Four worlds: **Golden**, **After Rain**, **Old Soul** and **Daydream**, plus **Surprise me**
+- Four light-and-colour worlds (**Golden**, **After Rain**, **Old Soul**, **Daydream**), **Doodle**
+  (hand-drawn marker doodles over the photo), and **Surprise me**
 - Drag-and-drop upload with preview, replace and remove
 - Eight built-in sample photos
 - Before/after slider (mouse, touch and keyboard) and a side-by-side view
@@ -124,7 +125,9 @@ docs/             Security checklist
 2. The server checks the origin, request, rate limit and bot token, then validates the image.
 3. The image is re-encoded, which removes metadata such as GPS location.
 4. A daily use is reserved, and the image is sent to the provider with a server-side prompt.
-5. The result is validated and returned to the browser. Nothing is stored.
+5. With Cloudflare, the model's colour and light are applied to the full-resolution original, so the
+   result keeps the original's detail and framing.
+6. The result is validated and returned to the browser. Nothing is stored.
 
 Uses lost to provider failures are refunded. Uses for safety refusals are not.
 
@@ -161,7 +164,8 @@ The transform route needs a function duration of up to 180 seconds.
 - Results are artistic interpretations. Fine details can change.
 - Accepts JPEG, PNG and WebP only. HEIC, AVIF, GIF and animated images are not supported.
 - Usage limits apply per network address, so people on a shared network share one allowance.
-- With Cloudflare, the model sees a reduced-resolution copy, so results are softer.
+- With Cloudflare, results change colour, light and tone only. The model works from a small copy, so
+  its own redraw is not used directly, and effects that add new detail (such as new clouds) are lost.
 
 ## Credits
 

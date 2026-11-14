@@ -6,7 +6,7 @@
 export const ERROR_CATALOGUE = {
   missing_image: { status: 400, message: "Choose a photo to reimagine." },
   invalid_request: { status: 400, message: "That request was not understood. Please try again." },
-  invalid_mood: { status: 400, message: "That mood is not available. Pick one of the four worlds." },
+  invalid_mood: { status: 400, message: "That mood is not available. Pick one of the worlds." },
   unsupported_media: {
     status: 415,
     message: "That file type is not supported. Use a JPEG, PNG or WebP photo.",

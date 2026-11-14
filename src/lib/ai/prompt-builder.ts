@@ -32,6 +32,13 @@ const MOOD_INSTRUCTIONS: Record<MoodId, string> = {
     "Lighting: soft and luminous, while the photo stays clear and well exposed, with readable mid-tones, visible texture and gentle contrast.",
     "Keep it restrained: no fantasy objects, sparkles, creatures or added scenery.",
   ].join(" "),
+  doodle: [
+    "Add a few playful, hand-drawn doodles on top of the photograph, as if a friend had drawn on a printed copy with white and brightly coloured paint markers.",
+    "Every doodle must interact with something real in the photo, so the drawings tell a small, funny story about this scene.",
+    "First find the one to three main subjects, then draw on and around them: trace a loose outline that hugs the main subject, give objects a simple cartoon face or expression, add motion lines behind anything that could move, steam or sparkles above anything warm or shiny, a scribbled sun or moon placed in the sky that matches the light, and small hearts or stars right next to the thing they are about.",
+    "Use about five to eight doodles in total, each placed on or touching the object it belongs to. Never scatter stray arrows, symbols or faces across empty sky, ground or walls, and never draw abstract squiggles or loose lines: every doodle is a clear, recognisable little drawing.",
+    "Use confident, slightly wobbly single strokes of even thickness, in white plus coral, sunny yellow and sky blue.",
+  ].join(" "),
 };
 
 const PRESERVATION_RULES = [
@@ -41,9 +48,17 @@ const PRESERVATION_RULES = [
   "Keep the output photographic and natural rather than illustrated.",
 ].join(" ");
 
+/** For worlds that add drawings: the photo underneath stays as it is. */
+const DRAWING_RULES = [
+  "Keep the photograph underneath unchanged: the same subject, composition, framing, perspective, colours and light.",
+  "Leave people's faces clear of drawings and keep the identity of any people exactly.",
+  "Keep it friendly and kind: nothing mocking, rude, frightening or suggestive, and no words, letters, numbers or logos.",
+].join(" ");
+
 export function buildTransformPrompt(moodId: MoodId): string {
   const mood = MOODS[moodId];
-  return `${PRESERVATION_RULES}\n\nMood: ${mood.name}. ${MOOD_INSTRUCTIONS[moodId]}`;
+  const rules = mood.kind === "drawing" ? DRAWING_RULES : PRESERVATION_RULES;
+  return `${rules}\n\nMood: ${mood.name}. ${MOOD_INSTRUCTIONS[moodId]}`;
 }
 
-export const __testing = { MOOD_INSTRUCTIONS, PRESERVATION_RULES };
+export const __testing = { MOOD_INSTRUCTIONS, PRESERVATION_RULES, DRAWING_RULES };

@@ -39,6 +39,8 @@ export default defineConfig({
       CLOUDFLARE_API_TOKEN: "",
       UPSTASH_REDIS_REST_URL: "",
       UPSTASH_REDIS_REST_TOKEN: "",
+      TURNSTILE_SITE_KEY: "",
+      TURNSTILE_SECRET_KEY: "",
       NEXT_TELEMETRY_DISABLED: "1",
     },
   },

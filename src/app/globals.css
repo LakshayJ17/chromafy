@@ -1,26 +1,177 @@
 @import "tailwindcss";
 
+/* Chromafy tokens. See DESIGN.md; every component references these, never raw values. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #fbf8f2;
+  --paper-2: #f3eee4;
+  --paper-3: #e8e1d3;
+  --ink: #1a1726;
+  --ink-2: #4b4658;
+  --accent: #5b3fd9;
+  --accent-press: #4a30be;
+  --accent-soft: #ece7fb;
+  --on-accent: #ffffff;
+  --danger: #9f2d27;
+  --success: #1d6a4c;
+
+  --step-small: clamp(0.8125rem, 0.8rem + 0.08vw, 0.875rem);
+  --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --step-head: clamp(2rem, 1.3rem + 3.2vw, 4rem);
+  --step-display: clamp(3.5rem, 8.6vw, 8.25rem);
+
+  --gutter: clamp(16px, 2.5vw, 32px);
+  --radius-media: 12px;
+  --radius-surface: 20px;
+  --radius-shell: 28px;
+  --shadow-float: 0 1px 2px rgb(26 23 38 / 0.06), 0 8px 24px rgb(26 23 38 / 0.1);
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-accent: var(--accent);
+  --color-accent-press: var(--accent-press);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+
+  --font-display: var(--font-stack-headline), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-stack-text), ui-sans-serif, system-ui, sans-serif;
+
+  --text-small: var(--step-small);
+  --text-small--line-height: 1.45;
+  --text-body: var(--step-body);
+  --text-body--line-height: 1.5;
+  --text-lead: var(--step-lead);
+  --text-lead--line-height: 1.3;
+  --text-head: var(--step-head);
+  --text-head--line-height: 1.04;
+  --text-display: var(--step-display);
+  --text-display--line-height: 1.02;
+
+  --radius-media: var(--radius-media);
+  --radius-surface: var(--radius-surface);
+  --radius-shell: var(--radius-shell);
+  --shadow-float: var(--shadow-float);
+  --ease-out: var(--ease-out);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: var(--step-body);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    letter-spacing: -0.022em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .page-x {
+    padding-inline: var(--gutter);
+  }
+
+  /* A slow, transform-only drift for the one moving picture. */
+  .drift {
+    animation: drift 24s var(--ease-out) infinite alternate;
+  }
+
+  /* The processing light: a soft band travelling across the photo. Transform only. */
+  .light-sweep {
+    animation: light-sweep 2.8s var(--ease-out) infinite;
+  }
+
+  /* A neutral scrim under text on a photograph: the only gradient allowed. */
+  .scrim-bottom {
+    background: linear-gradient(to top, rgb(26 23 38 / 0.55), rgb(26 23 38 / 0));
+  }
 }
+
+@keyframes drift {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes light-sweep {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drift,
+  .light-sweep {
+    animation: none;
+  }
+}
+
+/* Reveal: children rise in sequence once the group enters the viewport. */
+[data-reveal] > * {
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 800ms var(--ease-out);
+}
+[data-reveal="pending"] > * {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-reveal] > :nth-child(2) { transition-delay: 70ms; }
+[data-reveal] > :nth-child(3) { transition-delay: 140ms; }
+[data-reveal] > :nth-child(4) { transition-delay: 210ms; }
+[data-reveal] > :nth-child(5) { transition-delay: 280ms; }
+[data-reveal] > :nth-child(n + 6) { transition-delay: 350ms; }

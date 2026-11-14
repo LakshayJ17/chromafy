@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local tooling folders (git-ignored) are not project code.
+    ".claude/**",
+    ".taste-skill/**",
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 

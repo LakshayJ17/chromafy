@@ -39,3 +39,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# allow the placeholder-only example env file
+!.env.example
+
+# test output
+/test-results/
+/playwright-report/
+
+
+# real-provider smoke test output
+/smoke-output/
+
+# local assistant and design tooling (kept on this machine only)
+/.claude/
+/.taste-skill/
+/skills-lock.json
+/CLAUDE.md
+/AGENTS.md
+
+# editors and logs
+.vscode/
+.idea/
+*.log

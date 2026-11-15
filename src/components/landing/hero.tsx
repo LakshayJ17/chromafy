@@ -104,7 +104,7 @@ export function Hero() {
 
           <nav
             aria-label="Main"
-            className="absolute inset-x-0 top-0 z-[4] flex items-center justify-between p-5 transition-colors duration-700 lg:p-7"
+            className="absolute inset-x-0 top-0 z-[4] flex items-center justify-between gap-3 p-4 transition-colors duration-700 sm:p-5 lg:p-7"
             style={{ color: ink }}
           >
             <Link href="/" aria-label="Chromafy home" className="rounded-full">
@@ -112,17 +112,17 @@ export function Hero() {
             </Link>
             <ul className="flex items-center gap-1 text-small font-medium sm:gap-2">
               <li>
-                <a href="#how" className="hidden rounded-full px-3 py-2 hover:bg-paper/60 sm:inline-block">
+                <a href="#how" className="hidden rounded-full px-3 py-2.5 hover:bg-paper/60 md:inline-block">
                   How it works
                 </a>
               </li>
               <li>
-                <Link href="/privacy" className="rounded-full px-3 py-2 hover:bg-paper/60">
+                <Link href="/privacy" className="hidden rounded-full px-3 py-2.5 hover:bg-paper/60 sm:inline-block">
                   Privacy
                 </Link>
               </li>
               <li>
-                <Link href="/create" className="inline-flex items-center gap-1 rounded-full bg-ink px-4 py-2 text-paper hover:bg-ink/85">
+                <Link href="/create" className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-ink px-4 py-2.5 text-paper hover:bg-ink/85">
                   Open studio
                 </Link>
               </li>
@@ -155,7 +155,7 @@ export function Hero() {
         </div>
 
         <nav aria-label="The worlds" className="lg:col-span-2">
-          <ul className="flex flex-col lg:h-full">
+          <ul className="grid grid-cols-3 gap-1 overflow-hidden rounded-media lg:flex lg:h-full lg:flex-col lg:gap-0 lg:overflow-visible lg:rounded-none">
             {SWATCH_ORDER.map((id) => {
               const mood = MOODS[id];
               const isActive = id === active;
@@ -166,7 +166,7 @@ export function Hero() {
                     aria-pressed={isActive}
                     aria-label={`Show this photo in ${mood.name}`}
                     onClick={() => setActive(isActive ? null : id)}
-                    className="group flex h-[52px] w-full items-start justify-between px-5 pt-4 text-left transition-[filter] duration-200 hover:brightness-95 lg:h-full lg:flex-col lg:justify-between lg:pb-5"
+                    className="group flex h-14 w-full items-center justify-between px-3 text-left sm:px-5 transition-[filter] duration-200 hover:brightness-95 lg:h-full lg:flex-col lg:items-start lg:justify-between lg:pb-5 lg:pt-4"
                     style={{ backgroundColor: mood.field.background, color: mood.field.ink }}
                   >
                     <span className="flex items-center gap-2 text-small font-medium lg:text-body">
@@ -183,9 +183,12 @@ export function Hero() {
             <li className="lg:flex-1">
               <a
                 href="#samples"
-                className="flex h-[52px] items-start justify-between bg-ink px-5 pt-4 text-paper transition-colors duration-200 hover:bg-[#2b2638] lg:h-full lg:flex-col lg:pb-5"
+                className="flex h-14 items-center justify-between bg-ink px-3 text-paper transition-colors duration-200 hover:bg-[#2b2638] sm:px-5 lg:h-full lg:flex-col lg:items-start lg:pb-5 lg:pt-4"
               >
-                <span className="text-small font-medium lg:text-body">Try a sample photo</span>
+                <span className="text-small font-medium lg:text-body">
+                  <span className="lg:hidden">Samples</span>
+                  <span className="hidden lg:inline">Try a sample photo</span>
+                </span>
                 <span className="hidden text-small text-paper/85 lg:block">Eight ordinary moments</span>
               </a>
             </li>

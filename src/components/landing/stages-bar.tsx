@@ -31,7 +31,7 @@ const STAGES = [
 
 export function StagesBar() {
   return (
-    <section id="how" aria-labelledby="how-title" className="bg-ink py-24 text-paper lg:py-36">
+    <section id="how" aria-labelledby="how-title" className="bg-ink py-16 text-paper sm:py-24 lg:py-36">
       <Reveal className="page-x">
         <h2 id="how-title" className="max-w-[12ch] text-[11vw] leading-[1.02] lg:text-display">
           Three steps to new light

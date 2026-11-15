@@ -31,7 +31,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           </p>
         </div>
         <div className="lg:col-span-1 lg:text-right">
-          <a href="#top" className="text-small underline-offset-4 hover:underline">
+          <a href="#top" className="inline-block py-2.5 text-small underline-offset-4 hover:underline">
             Back to top
           </a>
         </div>
@@ -44,14 +44,14 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
       )}
 
       <div className={`grid gap-2 text-small text-ink-2 sm:grid-cols-3 ${compact ? "mt-10" : "mt-8"}`}>
-        <nav aria-label="Footer" className="flex gap-5">
-          <Link href="/create" className="hover:text-ink">
+        <nav aria-label="Footer" className="-my-2.5 flex gap-5 sm:my-0">
+          <Link href="/create" className="py-2.5 hover:text-ink sm:py-0">
             Studio
           </Link>
-          <Link href="/privacy" className="hover:text-ink">
+          <Link href="/privacy" className="py-2.5 hover:text-ink sm:py-0">
             Privacy
           </Link>
-          <Link href="/#how" className="hover:text-ink">
+          <Link href="/#how" className="py-2.5 hover:text-ink sm:py-0">
             How it works
           </Link>
         </nav>

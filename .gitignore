@@ -55,6 +55,7 @@ next-env.d.ts
 /.claude/
 /.taste-skill/
 /skills-lock.json
+/devtools/
 /CLAUDE.md
 /AGENTS.md
 

@@ -15,6 +15,7 @@ const eslintConfig = defineConfig([
     // Local tooling folders (git-ignored) are not project code.
     ".claude/**",
     ".taste-skill/**",
+    "devtools/**",
     "playwright-report/**",
     "test-results/**",
   ]),

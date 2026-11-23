@@ -23,6 +23,10 @@ const baseSecurityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // Remind about Next.js security advisories during dev and build (the documented default).
+    agentUpgrade: "security",
+  },
   // Nonce-based CSP requires per-request rendering, which is incompatible with
   // Partial Prerendering / Cache Components static shells (see the Next.js CSP guide).
   turbopack: {

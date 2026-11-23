@@ -14,6 +14,12 @@ export type AllowedInputMime = keyof typeof ALLOWED_INPUT_TYPES;
 
 export const MIN_IMAGE_SIDE = 256;
 
+/**
+ * Longest side over shortest. The image models get a copy under 512px and return at most 4:1, so a
+ * thinner strip reaches them a few pixels wide and comes back as an unusable sliver.
+ */
+export const MAX_ASPECT_RATIO = 4;
+
 // libvips keeps a decoded-image cache; disable it so memory is released after each request.
 sharp.cache(false);
 
@@ -63,6 +69,7 @@ export async function validateImage(input: Uint8Array, limits: ImageLimits): Pro
   if (!width || !height) throw new AppError("invalid_image");
   if (width * height > limits.maxPixels) throw new AppError("image_dimensions");
   if (width < MIN_IMAGE_SIDE || height < MIN_IMAGE_SIDE) throw new AppError("image_too_small");
+  if (Math.max(width, height) / Math.min(width, height) > MAX_ASPECT_RATIO) throw new AppError("image_aspect");
 
   return { bytes, mime, width, height };
 }

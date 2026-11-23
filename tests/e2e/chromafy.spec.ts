@@ -53,7 +53,7 @@ test("landing page renders with strict security headers and no console errors", 
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/What if it felt\s*different\?/);
   const heroWorlds = page.getByRole("navigation", { name: "The worlds" });
-  await expect(heroWorlds.getByRole("button")).toHaveCount(5);
+  await expect(heroWorlds.getByRole("button")).toHaveCount(4);
   await heroWorlds.getByRole("button", { name: /After Rain/ }).click();
   await expect(heroWorlds.getByRole("button", { name: /After Rain/ })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/Chromafy result: After Rain/)).toBeVisible();
@@ -81,6 +81,9 @@ test("full studio workflow with a mocked transformation", async ({ page, browser
   await expect(page.getByRole("button", { name: /^Reimagine/ })).toBeDisabled();
 
   await page.getByText("Golden", { exact: true }).click();
+  // The actions dock keeps both buttons on screen while the worlds are in view, on phones too.
+  await expect(page.getByRole("button", { name: /^Reimagine/ })).toBeInViewport();
+  await expect(page.getByRole("button", { name: /Surprise me/ })).toBeInViewport();
   await page.getByRole("button", { name: /^Reimagine/ }).click();
   await expect(page.getByText("Reimagining in Golden")).toBeVisible();
   await expect(page.getByRole("button", { name: "Reimagining…" })).toBeDisabled();
@@ -88,6 +91,9 @@ test("full studio workflow with a mocked transformation", async ({ page, browser
   const slider = page.getByRole("slider", { name: "Compare original and reimagined" });
   await expect(slider).toBeVisible();
   await expect(page.getByRole("heading", { name: "Golden" })).toBeVisible();
+  // The result's actions and explanation end up on screen without scrolling, on phones too.
+  await expect(page.getByRole("button", { name: "Download" })).toBeInViewport();
+  await expect(page.getByText(/We asked for warmer amber/)).toBeInViewport();
   await slider.focus();
   await page.keyboard.press("End");
   await expect(slider).toHaveAttribute("aria-valuenow", "100");

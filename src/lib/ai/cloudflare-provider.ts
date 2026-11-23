@@ -50,7 +50,7 @@ export function createCloudflareImageProvider(
   const url = `${API_ORIGIN}/client/v4/accounts/${encodeURIComponent(config.accountId)}/ai/run/${config.model}`;
 
   return {
-    async edit({ image, width, height, prompt, keepOriginalDetail, signal }) {
+    async edit({ image, width, height, prompt, signal }) {
       const reference = await sharp(image)
         .resize({ width: CLOUDFLARE_INPUT_MAX_EDGE, height: CLOUDFLARE_INPUT_MAX_EDGE, fit: "inside", withoutEnlargement: true })
         .jpeg({ quality: 92, mozjpeg: true })
@@ -100,7 +100,6 @@ export function createCloudflareImageProvider(
 
       const base64 = await withOneRetry(send, signal);
       const edited = await validateOutputImageOfAnyAllowedType(decodeBase64Image(base64));
-      if (!keepOriginalDetail) return edited;
       // The model redraws the scene from a sub-512px copy, so its detail is soft and
       // objects can shift. Keep the original's pixels and take only the edit's look.
       let look: Awaited<ReturnType<typeof transferLook>>;

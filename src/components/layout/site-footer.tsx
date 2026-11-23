@@ -14,9 +14,8 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
         <div className="max-w-[60ch] text-body lg:col-span-4">
           <h2 className="sr-only">About Chromafy</h2>
           <p>
-            Chromafy is a small creative playground. You bring an ordinary photo, choose one of five
-            worlds, and an AI image model reinterprets its colour, light and atmosphere, or doodles on
-            it. Results are
+            Chromafy is a small creative playground. You bring an ordinary photo, choose one of four
+            worlds, and an AI image model reinterprets its colour, light and atmosphere. Results are
             artistic interpretations, not restorations or factual records.
           </p>
         </div>

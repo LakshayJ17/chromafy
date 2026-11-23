@@ -13,19 +13,18 @@ import { findSample } from "@/lib/config/samples";
 const HERO_SAMPLE = findSample("hay-field")!;
 
 /** Ordered light to dark, as the direction asks. */
-const SWATCH_ORDER: MoodId[] = ["daydream", "golden", "after-rain", "old-soul", "doodle"];
+const SWATCH_ORDER: MoodId[] = ["daydream", "golden", "after-rain", "old-soul"];
 
 /**
  * Real Chromafy results for the hero photo, made once with the production
- * pipeline (FLUX.2 [klein] on Cloudflare; for the light worlds, the look is then
- * applied to the original) and saved as static files. Nothing here is a filter imitation.
+ * pipeline (FLUX.2 [klein] on Cloudflare, its look then applied to the original)
+ * and saved as static files. Nothing here is a filter imitation.
  */
 const HERO_RESULTS: Record<MoodId, string> = {
   golden: "/samples/hero/hay-field-golden.jpg",
   "after-rain": "/samples/hero/hay-field-after-rain.jpg",
   "old-soul": "/samples/hero/hay-field-old-soul.jpg",
   daydream: "/samples/hero/hay-field-daydream.jpg",
-  doodle: "/samples/hero/hay-field-doodle-v2.jpg",
 };
 
 /**
@@ -38,7 +37,6 @@ const HERO_INK: Record<MoodId | "original", string> = {
   "after-rain": "#0E3B36",
   "old-soul": "#24120B",
   daydream: "#4E2D6B",
-  doodle: "#1A1726",
 };
 
 const WIPE_SECONDS = 1.1;
@@ -155,7 +153,7 @@ export function Hero() {
         </div>
 
         <nav aria-label="The worlds" className="lg:col-span-2">
-          <ul className="grid grid-cols-3 gap-1 overflow-hidden rounded-media lg:flex lg:h-full lg:flex-col lg:gap-0 lg:overflow-visible lg:rounded-none">
+          <ul className="grid grid-cols-2 gap-1 overflow-hidden rounded-media sm:grid-cols-4 lg:flex lg:h-full lg:flex-col lg:gap-0 lg:overflow-visible lg:rounded-none">
             {SWATCH_ORDER.map((id) => {
               const mood = MOODS[id];
               const isActive = id === active;
@@ -180,7 +178,7 @@ export function Hero() {
                 </li>
               );
             })}
-            <li className="lg:flex-1">
+            <li className="col-span-2 sm:col-span-4 lg:flex-1">
               <a
                 href="#samples"
                 className="flex h-14 items-center justify-between bg-ink px-3 text-paper transition-colors duration-200 hover:bg-[#2b2638] sm:px-5 lg:h-full lg:flex-col lg:items-start lg:pb-5 lg:pt-4"

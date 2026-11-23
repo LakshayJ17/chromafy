@@ -86,16 +86,14 @@ describe("POST /api/transform (mocked provider)", () => {
     expect(request.prompt).toContain("Mood: Golden.");
     expect(request.width).toBeLessThanOrEqual(2048);
     expect(request.mime).toBe("image/jpeg");
-    expect(request.keepOriginalDetail).toBe(true);
   });
 
-  it("asks the provider to return its own picture for Doodle", async () => {
+  it("refuses the removed Doodle world before any provider call", async () => {
     const { provider, edit } = await mockProvider();
     const response = await makeHandler({ provider })(post(new Uint8Array(await makeImage("jpeg")), { query: "?mood=doodle" }));
-    expect(response.status).toBe(200);
-    expect(response.headers.get("x-chromafy-mood")).toBe("doodle");
-    expect(edit.mock.calls[0][0].keepOriginalDetail).toBe(false);
-    expect(edit.mock.calls[0][0].prompt).toContain("Mood: Doodle.");
+    expect(response.status).toBe(400);
+    expect((await response.json()).error.code).toBe("invalid_mood");
+    expect(edit).not.toHaveBeenCalled();
   });
 
   it("sends the provider a re-encoded image without EXIF or GPS", async () => {
@@ -262,6 +260,15 @@ describe("POST /api/transform (mocked provider)", () => {
       expect(edit).toHaveBeenCalledTimes(5);
     });
 
+    it("refuses a long thin strip without spending a use or calling the provider", async () => {
+      const { provider, edit } = await mockProvider();
+      const quota = createMemoryDailyQuota({ perClient: 5, global: 100 });
+      const response = await makeHandler({ provider, quota })(post(new Uint8Array(await makeImage("png", 256, 20000)), { contentType: "image/png" }));
+      await expectError(response, "image_aspect");
+      expect(edit).not.toHaveBeenCalled();
+      expect((await quota.peek(clientIdForTests()))?.remaining).toBe(5);
+    });
+
     it("does not spend a use on an invalid upload", async () => {
       const { provider } = await mockProvider();
       const quota = createMemoryDailyQuota({ perClient: 5, global: 100 });
@@ -317,7 +324,7 @@ describe("POST /api/transform (mocked provider)", () => {
 
       const ok = await handler(post(new Uint8Array(await makeImage("jpeg")), { headers: { "x-turnstile-token": "good-token" } }));
       expect(ok.status).toBe(200);
-      expect(verifyTurnstile).toHaveBeenLastCalledWith("good-token", null);
+      expect(verifyTurnstile).toHaveBeenLastCalledWith("good-token", null, "localhost");
     });
 
     it("does not spend a daily use when the bot check fails", async () => {

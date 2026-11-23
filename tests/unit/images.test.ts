@@ -72,6 +72,12 @@ describe("validateImage", () => {
     await expectCode(validateImage(await makeImage("png", 100, 400), limits), "image_too_small");
   });
 
+  it("rejects strips longer than 4:1, which the model would only see a few pixels wide", async () => {
+    await expectCode(validateImage(await makeImage("png", 256, 20000), limits), "image_aspect");
+    await expectCode(validateImage(await makeImage("png", 1100, 256), limits), "image_aspect");
+    await expect(validateImage(await makeImage("png", 1024, 256), limits)).resolves.toMatchObject({ width: 1024, height: 256 });
+  });
+
   it("rejects a truncated JPEG during the full decode in normalization", async () => {
     const big = await sharp({ create: { width: 900, height: 700, channels: 3, background: "#333" } })
       .composite([{ input: Buffer.from('<svg width="900" height="700"><circle cx="400" cy="300" r="250" fill="#e3a"/></svg>') }])

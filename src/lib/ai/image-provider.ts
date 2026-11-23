@@ -12,12 +12,6 @@ export type ImageEditRequest = {
   width: number;
   height: number;
   prompt: string;
-  /**
-   * True for worlds that only change colour and light: an adapter whose model
-   * works from a low-resolution copy may then keep the original's detail.
-   * False when the edit adds new marks (Doodle), so the model's picture is used.
-   */
-  keepOriginalDetail: boolean;
   signal: AbortSignal;
 };
 

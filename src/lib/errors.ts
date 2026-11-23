@@ -22,6 +22,10 @@ export const ERROR_CATALOGUE = {
     status: 422,
     message: "That photo has too many pixels to process. Try a smaller version.",
   },
+  image_aspect: {
+    status: 422,
+    message: "That photo is too long and narrow. Crop it to no more than 4:1 and try again.",
+  },
   forbidden_origin: { status: 403, message: "Requests must come from the Chromafy app." },
   rate_limited: {
     status: 429,

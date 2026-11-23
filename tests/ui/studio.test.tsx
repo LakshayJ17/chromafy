@@ -63,9 +63,12 @@ describe("Studio workflow (mocked network)", () => {
     await userEvent.click(reimagine());
 
     expect(await screen.findByRole("slider", { name: /Compare original/ })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Golden" })).toBeInTheDocument();
-    expect(screen.getByText(/We asked for warmer amber/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument();
+    // The result's name, explanation and actions sit with the photo, not at the end of the controls.
+    const photoArea = within(screen.getByRole("region", { name: "Photo" }));
+    expect(photoArea.getByRole("heading", { name: "Golden" })).toBeInTheDocument();
+    expect(photoArea.getByText(/We asked for warmer amber/)).toBeInTheDocument();
+    const actions = within(photoArea.getByRole("group", { name: "Result actions" }));
+    expect(actions.getAllByRole("button").map((button) => button.getAttribute("aria-label"))).toEqual(["Download", "Share", "Start again"]);
 
     await userEvent.click(screen.getByRole("button", { name: "Side by side" }));
     expect(screen.getByText("Original", { selector: "figcaption" })).toBeInTheDocument();
@@ -168,5 +171,58 @@ describe("Studio daily allowance", () => {
     await userEvent.click(screen.getByRole("button", { name: /Reimagine/ }));
     expect(await screen.findByRole("alert")).toHaveTextContent("You've used all of today's transformations.");
     expect(screen.getByTestId("quota")).toHaveTextContent("You've used today's 5 transformations.");
+  });
+});
+
+describe("Studio keeps the result in sight (mocked network, mocked layout)", () => {
+  afterEach(() => vi.restoreAllMocks());
+
+  // jsdom has no layout, so the photo area's position on screen is stubbed.
+  function placePhotoArea(top: number, height: number) {
+    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (this: HTMLElement) {
+      const rect = this.getAttribute("aria-label") === "Photo" ? { top, height } : { top: 0, height: 0 };
+      return { ...rect, bottom: rect.top + rect.height, left: 0, right: 400, width: 400, x: 0, y: rect.top, toJSON: () => ({}) } as DOMRect;
+    });
+    return vi.spyOn(window, "scrollBy").mockImplementation(() => undefined);
+  }
+
+  function resultFetch() {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(new Blob(["golden"], { type: "image/jpeg" }), { headers: { "content-type": "image/jpeg", "x-chromafy-mood": "golden" } })),
+    );
+  }
+
+  it("scrolls back up to the photo when it is off screen, as on a phone", async () => {
+    resultFetch();
+    render(<Studio liveEnabled />);
+    await upload();
+    const scrollBy = placePhotoArea(-900, 600);
+    await userEvent.click(screen.getByLabelText(/Golden/));
+    await userEvent.click(screen.getByRole("button", { name: /Reimagine/ }));
+    await screen.findByRole("group", { name: "Result actions" });
+    expect(scrollBy).toHaveBeenCalledWith(expect.objectContaining({ top: -916 }));
+  });
+
+  it("leaves the page alone when the photo and result are already on screen", async () => {
+    resultFetch();
+    render(<Studio liveEnabled />);
+    await upload();
+    const scrollBy = placePhotoArea(100, 600);
+    await userEvent.click(screen.getByLabelText(/Golden/));
+    await userEvent.click(screen.getByRole("button", { name: /Reimagine/ }));
+    await screen.findByRole("group", { name: "Result actions" });
+    expect(scrollBy).not.toHaveBeenCalled();
+  });
+
+  it("Start again under the result clears the photo", async () => {
+    resultFetch();
+    render(<Studio liveEnabled />);
+    await upload();
+    await userEvent.click(screen.getByLabelText(/Golden/));
+    await userEvent.click(screen.getByRole("button", { name: /Reimagine/ }));
+    await userEvent.click(await screen.findByRole("button", { name: "Start again" }));
+    expect(screen.queryByAltText("Your original photo")).not.toBeInTheDocument();
+    expect(screen.getByLabelText(/Choose a photo/)).toBeInTheDocument();
   });
 });

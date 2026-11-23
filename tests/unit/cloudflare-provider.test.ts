@@ -22,7 +22,6 @@ async function request(width = 1600, height = 1067) {
     width,
     height,
     prompt: "server prompt",
-    keepOriginalDetail: true,
     signal: new AbortController().signal,
   };
 }
@@ -54,12 +53,6 @@ describe("createCloudflareImageProvider", () => {
     expect(Math.max(meta.width!, meta.height!)).toBeLessThanOrEqual(CLOUDFLARE_INPUT_MAX_EDGE);
     expect(Math.max(meta.width!, meta.height!)).toBeLessThan(512);
     expect([...form.keys()].sort()).toEqual(["height", "input_image_0", "prompt", "width"]);
-  });
-
-  it("returns the model's own picture for drawing worlds such as Doodle", async () => {
-    const provider = createCloudflareImageProvider(config, vi.fn(async () => ok("png")) as unknown as typeof fetch);
-    const result = await provider.edit({ ...(await request()), keepOriginalDetail: false });
-    expect(result).toMatchObject({ mime: "image/png", width: 1024, height: 688 });
   });
 
   it("accepts PNG output by signature and returns a JPEG at the original size", async () => {

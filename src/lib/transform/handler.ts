@@ -2,7 +2,7 @@ import "server-only";
 import { buildTransformPrompt } from "@/lib/ai/prompt-builder";
 import type { ImageEditProvider } from "@/lib/ai/image-provider";
 import type { ServerConfig } from "@/lib/config/env";
-import { MOODS, pickSurpriseMood, type MoodId } from "@/lib/config/moods";
+import { pickSurpriseMood, type MoodId } from "@/lib/config/moods";
 import { AppError, errorBody, type ErrorCode } from "@/lib/errors";
 import { normalizeImage } from "@/lib/images/normalize-image";
 import { validateImage } from "@/lib/images/validate-image";
@@ -89,6 +89,7 @@ export function createTransformHandler(deps: TransformDependencies) {
         await deps.verifyTurnstile(
           request.headers.get(TURNSTILE_HEADER),
           getClientAddress(request.headers, deps.config.clientIpHeader),
+          requestHostname(request),
         );
       }
 
@@ -127,7 +128,6 @@ export function createTransformHandler(deps: TransformDependencies) {
           width: normalized.width,
           height: normalized.height,
           prompt,
-          keepOriginalDetail: MOODS[mood].kind === "look",
           signal,
         })
         .catch((error: unknown) => {
@@ -170,6 +170,15 @@ export function createTransformHandler(deps: TransformDependencies) {
       release?.();
     }
   };
+}
+
+/** The host this request was sent to, as the same-origin check sees it, without the port. */
+function requestHostname(request: Request): string | null {
+  try {
+    return new URL(`http://${request.headers.get("host") ?? new URL(request.url).host}`).hostname;
+  } catch {
+    return null;
+  }
 }
 
 function quotaHeaders(status: QuotaStatus): Record<string, string> {

@@ -1,5 +1,6 @@
 import "server-only";
 import { z } from "zod";
+import { TURNSTILE_TEST_KEY } from "@/lib/security/turnstile";
 
 /**
  * Image models the OpenAI adapter may call. Every entry supports
@@ -143,7 +144,7 @@ export function parseServerConfig(source: Record<string, string | undefined>): S
   }
   // Cloudflare's documented dummy keys (1x/2x/3x followed by zeros) accept any token.
   // They are for local testing only; in production they would silently disable the bot check.
-  if (env.NODE_ENV === "production" && [env.TURNSTILE_SITE_KEY, env.TURNSTILE_SECRET_KEY].some((key) => key && /^[123]x0{20}/.test(key))) {
+  if (env.NODE_ENV === "production" && [env.TURNSTILE_SITE_KEY, env.TURNSTILE_SECRET_KEY].some((key) => key && TURNSTILE_TEST_KEY.test(key))) {
     throw new ConfigError(["TURNSTILE_SITE_KEY / TURNSTILE_SECRET_KEY: Cloudflare test keys are not allowed in production"]);
   }
 

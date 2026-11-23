@@ -6,6 +6,8 @@
 export const CLIENT_MAX_FILE_BYTES = 20 * 1024 * 1024;
 export const UPLOAD_MAX_EDGE = 2048;
 export const MIN_SIDE = 256;
+/** Mirrors the server's MAX_ASPECT_RATIO, for an instant message instead of a failed upload. */
+export const MAX_ASPECT_RATIO = 4;
 export const ACCEPTED_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export const ACCEPT_ATTRIBUTE = ACCEPTED_TYPES.join(",");
 
@@ -55,6 +57,9 @@ export async function prepareUpload(file: Blob): Promise<PreparedUpload> {
   try {
     if (bitmap.width < MIN_SIDE || bitmap.height < MIN_SIDE) {
       throw new ClientImageError("That image is too small. Use a photo at least 256 pixels on each side.");
+    }
+    if (Math.max(bitmap.width, bitmap.height) / Math.min(bitmap.width, bitmap.height) > MAX_ASPECT_RATIO) {
+      throw new ClientImageError("That photo is too long and narrow. Crop it to no more than 4:1 and try again.");
     }
     const scale = Math.min(1, UPLOAD_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
     const width = Math.round(bitmap.width * scale);

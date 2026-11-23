@@ -8,8 +8,7 @@ atmosphere while keeping the subject and composition.
 
 ## Features
 
-- Four light-and-colour worlds (**Golden**, **After Rain**, **Old Soul**, **Daydream**), **Doodle**
-  (hand-drawn marker doodles over the photo), and **Surprise me**
+- Four light-and-colour worlds (**Golden**, **After Rain**, **Old Soul**, **Daydream**) and **Surprise me**
 - Drag-and-drop upload with preview, replace and remove
 - Eight built-in sample photos
 - Before/after slider (mouse, touch and keyboard) and a side-by-side view

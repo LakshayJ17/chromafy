@@ -12,7 +12,7 @@ describe("MoodPicker", () => {
     render(<MoodPicker value={null} onChange={onChange} />);
     expect(screen.getByRole("group", { name: "Choose a world" })).toBeInTheDocument();
     const radios = screen.getAllByRole("radio");
-    expect(radios.map((radio) => (radio as HTMLInputElement).value)).toEqual(["golden", "after-rain", "old-soul", "daydream", "doodle"]);
+    expect(radios.map((radio) => (radio as HTMLInputElement).value)).toEqual(["golden", "after-rain", "old-soul", "daydream"]);
     await userEvent.click(screen.getByLabelText(/After Rain/));
     expect(onChange).toHaveBeenCalledWith("after-rain");
   });

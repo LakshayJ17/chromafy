@@ -26,7 +26,7 @@ describe("MoodPicker", () => {
 
 describe("CompareSlider", () => {
   it("is a keyboard-operable slider with both images labelled", async () => {
-    render(<CompareSlider beforeUrl="blob:a" afterUrl="blob:b" beforeAlt="Original photo" afterAlt="Reimagined photo" afterLabel="Reimagined · Golden" aspectRatio={1.5} />);
+    render(<CompareSlider beforeUrl="blob:a" afterUrl="blob:b" beforeAlt="Original photo" afterAlt="Reimagined photo" afterLabel="Reimagined in Golden" aspectRatio={1.5} />);
     const slider = screen.getByRole("slider", { name: "Compare original and reimagined" });
     expect(slider).toHaveAttribute("aria-valuenow", "50");
     slider.focus();
@@ -37,7 +37,7 @@ describe("CompareSlider", () => {
     await userEvent.keyboard("{End}");
     expect(slider).toHaveAttribute("aria-valuenow", "100");
     expect(screen.getByAltText("Original photo")).toBeInTheDocument();
-    expect(screen.getByText("Reimagined · Golden")).toBeInTheDocument();
+    expect(screen.getByText("Reimagined in Golden")).toBeInTheDocument();
   });
 });
 

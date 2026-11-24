@@ -15,7 +15,7 @@ type Props = {
 };
 
 export function ComparisonView({ beforeUrl, afterUrl, moodName, aspectRatio, mode, onModeChange }: Props) {
-  const afterLabel = `Reimagined · ${moodName}`;
+  const afterLabel = `Reimagined in ${moodName}`;
   const beforeAlt = "Your original photo";
   const afterAlt = `Your photo reimagined in the ${moodName} world`;
 

@@ -58,7 +58,7 @@ test("landing page renders with strict security headers and no console errors", 
   await expect(heroWorlds.getByRole("button", { name: /After Rain/ })).toHaveAttribute("aria-pressed", "true");
   await expect(page.getByText(/Chromafy result: After Rain/)).toBeVisible();
   await heroWorlds.getByRole("button", { name: /After Rain/ }).click();
-  await expect(page.getByText(/Original photo, unedited/)).toBeVisible();
+  await expect(page.getByText(/The unedited original/)).toBeVisible();
 
   const index = page.getByRole("group", { name: "Choose a world to read about" });
   await index.getByRole("button", { name: "After Rain" }).click();
@@ -86,7 +86,7 @@ test("full studio workflow with a mocked transformation", async ({ page, browser
   await expect(page.getByRole("button", { name: /Surprise me/ })).toBeInViewport();
   await page.getByRole("button", { name: /^Reimagine/ }).click();
   await expect(page.getByText("Reimagining in Golden")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Reimagining…" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Reimagining..." })).toBeDisabled();
 
   const slider = page.getByRole("slider", { name: "Compare original and reimagined" });
   await expect(slider).toBeVisible();
@@ -99,7 +99,7 @@ test("full studio workflow with a mocked transformation", async ({ page, browser
   await expect(slider).toHaveAttribute("aria-valuenow", "100");
 
   await page.getByRole("button", { name: "Side by side" }).click();
-  await expect(page.locator("figcaption", { hasText: "Reimagined · Golden" })).toBeVisible();
+  await expect(page.locator("figcaption", { hasText: "Reimagined in Golden" })).toBeVisible();
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download" }).click();

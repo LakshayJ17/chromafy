@@ -37,7 +37,7 @@ export function Dropzone({ onFile, disabled = false }: { onFile: (file: File) =>
           {dragging ? "Drop it here" : "Drop a photo here"}
         </p>
         <p id={hintId} className="mt-2 text-small text-ink-2">
-          JPEG, PNG or WebP · still images · up to 20 MB · at least 256 px
+          JPEG, PNG or WebP up to 20 MB, at least 256 px. Still images only.
         </p>
       </div>
       <label

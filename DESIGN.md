@@ -25,12 +25,12 @@ No brand's logo, typeface, palette or layout is reproduced.
 | `--paper` | `#FBF8F2` | Page ground (warm off-white) |
 | `--paper-2` | `#F3EEE4` | First tone step: panels, rails, footer |
 | `--paper-3` | `#E8E1D3` | Second step: wells, pressed neutral controls |
-| `--ink` | `#1A1726` | All running text and headings (≈16:1 on paper) |
-| `--ink-2` | `#4B4658` | Secondary notes only (≈8:1 on paper) |
+| `--ink` | `#1A1726` | All running text and headings (about 16:1 on paper) |
+| `--ink-2` | `#4B4658` | Secondary notes only (about 8:1 on paper) |
 | `--accent` | `#5B3FD9` | Primary action, selected state, focus ring |
 | `--accent-press` | `#4A30BE` | Accent hover / pressed |
 | `--accent-soft` | `#ECE7FB` | Selected option ground |
-| `--on-accent` | `#FFFFFF` | Text on accent (≈6.6:1) |
+| `--on-accent` | `#FFFFFF` | Text on accent (about 6.6:1) |
 | `--danger` | `#9F2D27` | Error text and icon, always with words |
 | `--success` | `#1D6A4C` | Completion text, always with words |
 
@@ -53,7 +53,7 @@ Violet is the brand colour and the only accent.
 
 One family in two cuts, self-hosted through `next/font`:
 
-- **Display:** Stack Sans Headline, weight 300, tracking −0.022em, leading 1.02–1.05, sentence case.
+- **Display:** Stack Sans Headline, weight 300, tracking -0.022em, leading 1.02 to 1.05, sentence case.
 - **Text:** Stack Sans Text, 400 for body, 500 for emphasis and controls, leading 1.5.
 
 | Step | Size | Use |
@@ -100,7 +100,7 @@ monospace, no tracked uppercase labels, and no italic or coloured accent words.
 - **Dropzone:** a large paper-3 well inside the bezel, with the drop instruction, a visible
   "Choose a photo" button and the accepted formats and size in plain text.
 - **Comparison:** draggable slider (`role="slider"`, arrow keys, Home/End) with *Original* and
-  *Reimagined · World* labels on photo-safe pills. A segmented control switches to side by side.
+  *Reimagined in World* labels on photo-safe pills. A segmented control switches to side by side.
 - **Icons:** Lucide at `strokeWidth={1.5}`, 20 to 24px. The thin stroke keeps icons
   light next to the type.
 - **Focus:** a 2px `--accent` outline at a 3px offset on every interactive element.
@@ -126,4 +126,4 @@ four world colours. It is inline SVG (`src/components/layout/logo.tsx`), so no e
 ## 9. Voice
 
 Plain, warm and exact. Use short sentences. Never claim the AI detected or changed specific objects.
-Use "We asked for…" when describing a result. Never use exclamation marks in errors.
+Use "We asked for..." when describing a result. Never use exclamation marks in errors.

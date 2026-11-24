@@ -1,8 +1,11 @@
 # Security checklist
 
-Status key: **Tested** (implemented and covered by automated tests run on 2026-10-17) ·
-**Implemented** (in code, verified manually or indirectly) · **Deploy** (needs configuration
-outside the code) · **Not verified** (cannot be verified in this environment).
+Status key:
+
+- **Tested**: implemented and covered by automated tests run on 2026-10-17.
+- **Implemented**: in code, verified manually or indirectly.
+- **Deploy**: needs configuration outside the code.
+- **Not verified**: cannot be verified in this environment.
 
 ## Secrets
 
@@ -30,7 +33,7 @@ outside the code) · **Not verified** (cannot be verified in this environment).
 | Full decode under `limitInputPixels`; corrupt or truncated files rejected | `normalize-image.ts` | Tested |
 | Re-encode to JPEG, applying orientation; EXIF/GPS/ICC dropped | `normalize-image.ts` | Tested (GPS fixture) |
 | In memory only, with no temp files and libvips cache disabled | `sharp.cache(false)` | Implemented |
-| Platform body limits (Vercel ≈4.5 MB) | Browser downscales to ≤2048 px JPEG first | Implemented; **Deploy**: keep `MAX_IMAGE_SIZE_MB` within platform limits |
+| Platform body limits (about 4.5 MB on Vercel) | Browser downscales to a JPEG of at most 2048 px first | Implemented; **Deploy**: keep `MAX_IMAGE_SIZE_MB` within platform limits |
 
 ## Abuse and cost
 
@@ -68,7 +71,7 @@ outside the code) · **Not verified** (cannot be verified in this environment).
 
 | Control | Where | Status |
 | --- | --- | --- |
-| Nonce CSP: `script-src 'self' 'nonce-…' 'strict-dynamic'`, `object-src 'none'`, `base-uri 'self'`, `frame-ancestors 'none'`, `connect-src 'self'` | `src/proxy.ts`, `src/lib/security/csp.ts` | Tested (unit + e2e headers; zero console CSP violations in a production build) |
+| Nonce CSP: `script-src 'self' 'nonce-...' 'strict-dynamic'`, `object-src 'none'`, `base-uri 'self'`, `frame-ancestors 'none'`, `connect-src 'self'` | `src/proxy.ts`, `src/lib/security/csp.ts` | Tested (unit + e2e headers; zero console CSP violations in a production build) |
 | `style-src-attr 'unsafe-inline'` (inline style attributes for motion and colour tokens; cannot run script) | `csp.ts` | Implemented, accepted trade-off |
 | Dev-only relaxations: `'unsafe-eval'`, inline `<style>`, websockets | `csp.ts` (`isDev`) | Tested |
 | API responses: `default-src 'none'`, `no-store`, `nosniff` | `next.config.ts`, `handler.ts` | Tested (e2e) |

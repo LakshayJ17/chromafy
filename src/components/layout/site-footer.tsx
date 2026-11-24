@@ -55,7 +55,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           </Link>
         </nav>
         <p className="sm:text-center">Sample photos: Unsplash, via Lorem Picsum</p>
-        <p className="sm:text-right">Chromafy · 2026</p>
+        <p className="sm:text-right">Chromafy, 2026</p>
       </div>
     </footer>
   );

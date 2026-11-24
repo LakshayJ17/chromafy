@@ -24,8 +24,8 @@ const text = Stack_Sans_Text({
 
 export const metadata: Metadata = {
   title: {
-    default: "Chromafy · The world, in another light",
-    template: "%s · Chromafy",
+    default: "Chromafy | The world, in another light",
+    template: "%s | Chromafy",
   },
   description:
     "Upload an ordinary photo, choose a world and see the same moment in another light. Keep the moment. Change the feeling.",

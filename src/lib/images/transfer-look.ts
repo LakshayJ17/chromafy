@@ -19,9 +19,9 @@ import sharp from "sharp";
  */
 
 export type LookOptions = {
-  /** 0–1: how much of the edit's global tone and colour to apply. */
+  /** 0 to 1: how much of the edit's global tone and colour to apply. */
   globalStrength?: number;
-  /** 0–1: how much of the edit's broad, local light to apply. */
+  /** 0 to 1: how much of the edit's broad, local light to apply. */
   localStrength?: number;
 };
 

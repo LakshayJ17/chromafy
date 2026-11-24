@@ -146,8 +146,8 @@ export function Hero() {
             </div>
             <p aria-live="polite" className="text-center text-small text-paper/90 lg:absolute lg:bottom-1 lg:right-0 lg:text-right">
               {active
-                ? `Chromafy result: ${MOODS[active].name} · ${HERO_SAMPLE.credit.author} / Unsplash`
-                : `Original photo, unedited · ${HERO_SAMPLE.credit.author} / Unsplash`}
+                ? `Chromafy result: ${MOODS[active].name}. Photo by ${HERO_SAMPLE.credit.author} on Unsplash`
+                : `The unedited original. Photo by ${HERO_SAMPLE.credit.author} on Unsplash`}
             </p>
           </div>
         </div>
@@ -172,7 +172,7 @@ export function Hero() {
                       {isActive && <Check className="size-4" strokeWidth={2} aria-hidden="true" />}
                     </span>
                     <span className="hidden text-small opacity-90 lg:block">
-                      {isActive ? "Showing · tap again for the original" : mood.feeling}
+                      {isActive ? "Tap again for the original" : mood.feeling}
                     </span>
                   </button>
                 </li>

@@ -19,7 +19,7 @@ const response = await fetch(`${base}/api/transform?mood=${mood}`, {
 const seconds = ((Date.now() - started) / 1000).toFixed(1);
 
 if (!response.ok) {
-  console.error(`✗ ${response.status} after ${seconds}s:`, (await response.text()).slice(0, 500));
+  console.error(`Failed with ${response.status} after ${seconds}s:`, (await response.text()).slice(0, 500));
   process.exit(1);
 }
 const bytes = Buffer.from(await response.arrayBuffer());
@@ -28,4 +28,4 @@ const extension = type === "image/png" ? "png" : type === "image/webp" ? "webp" 
 mkdirSync(new URL("../smoke-output/", import.meta.url), { recursive: true });
 const out = new URL(`../smoke-output/${sample}-${response.headers.get("x-chromafy-mood")}.${extension}`, import.meta.url);
 writeFileSync(out, bytes);
-console.log(`✓ ${type}, ${(bytes.byteLength / 1024).toFixed(0)} KB in ${seconds}s → ${out.pathname}`);
+console.log(`Saved ${type}, ${(bytes.byteLength / 1024).toFixed(0)} KB in ${seconds}s, to ${out.pathname}`);

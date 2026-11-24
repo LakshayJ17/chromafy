@@ -290,7 +290,7 @@ export function Studio({ liveEnabled, initialSample, quota: initialQuota = null,
           )}
 
           {state.phase === "loading" && state.original && (
-            <p className="absolute inset-x-0 bottom-4 text-center text-small text-ink-2">Loading photo…</p>
+            <p className="absolute inset-x-0 bottom-4 text-center text-small text-ink-2">Loading photo...</p>
           )}
         </div>
       </section>
@@ -313,7 +313,7 @@ export function Studio({ liveEnabled, initialSample, quota: initialQuota = null,
         {state.original && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-surface bg-paper-2 p-4">
             <p className="min-w-0 truncate text-small">
-              <span className="text-ink-2">Photo · </span>
+              <span className="text-ink-2">Photo: </span>
               <span className="font-medium">{state.original.label}</span>
             </p>
             <div className="flex gap-1">
@@ -395,7 +395,7 @@ export function Studio({ liveEnabled, initialSample, quota: initialQuota = null,
               onClick={() => state.mood && runTransform(state.mood)}
               icon={<ArrowUpRight className="size-5" strokeWidth={1.5} />}
             >
-              {state.phase === "processing" ? "Reimagining…" : tryAnotherLabel}
+              {state.phase === "processing" ? "Reimagining..." : tryAnotherLabel}
             </Button>
             <Button
               type="button"

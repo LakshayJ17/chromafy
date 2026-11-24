@@ -48,7 +48,7 @@ export function ProcessingOverlay({ moodName, onCancel }: { moodName: string; on
               </motion.p>
             </AnimatePresence>
           </div>
-          <p className="mt-1 text-small text-ink-2">{seconds}s · this can take up to two minutes</p>
+          <p className="mt-1 text-small text-ink-2">{seconds}s so far. This can take up to two minutes.</p>
         </div>
         <button
           type="button"
